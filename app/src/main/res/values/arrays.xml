@@ -1,12 +1,12 @@
 <resources>
-    <!-- Reply Preference -->
-    <string-array name="reply_entries">
-        <item>Reply</item>
-        <item>Reply to all</item>
+    <!-- Mode Preference -->
+    <string-array name="mode_entries">
+        <item>Allow all</item>
+        <item>Block all</item>
     </string-array>
 
-    <string-array name="reply_values">
-        <item>reply</item>
-        <item>reply_all</item>
+    <string-array name="mode_values">
+        <item>allow_all</item>
+        <item>block_all</item>
     </string-array>
 </resources>
