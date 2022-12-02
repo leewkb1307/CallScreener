@@ -1,8 +1,11 @@
 package com.gmail.leewkb1307.callscreener
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
+import android.database.Cursor
 import android.net.Uri
+import android.provider.ContactsContract
 import android.telecom.Call
 import android.telecom.Call.Details.DIRECTION_INCOMING
 import android.telecom.CallScreeningService
@@ -28,17 +31,26 @@ class CallScreenerService : CallScreeningService() {
             }
 
             val isUnknownCall = incomingNumber == null || incomingNumber.isEmpty()
-            
-            var isEndCall = false
+
+            val isEndCall: Boolean
             val context: Context = applicationContext
             val sharedPref: SharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context)
             val prefMode = sharedPref.getString("prefMode", "allow_all")
 
-            if (prefMode == "block_all") {
-                isEndCall = true
-            } else if (prefMode == "block_unknown") {
-                isEndCall = isUnknownCall
+            isEndCall = when (prefMode) {
+                "block_all" -> {
+                    true
+                }
+                "block_unknown" -> {
+                    isUnknownCall
+                }
+                "allow_contact" -> {
+                    isUnknownCall || !isInContact(context, incomingNumber)
+                }
+                else -> {
+                    false
+                }
             }
 
             val callResponseBuilder: CallResponse.Builder = CallResponse.Builder()
@@ -53,5 +65,30 @@ class CallScreenerService : CallScreeningService() {
             respondToCall(callDetails,
                 callResponseBuilder.build())
         }
+    }
+
+    private fun isInContact(context: Context, phoneNumber: String?): Boolean {
+        val isContact: Boolean
+
+        if (phoneNumber == null) {
+            isContact = false
+        } else {
+            val resolver: ContentResolver = context.contentResolver
+            val uri = Uri.withAppendedPath(
+                ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(
+                    phoneNumber
+                )
+            )
+            val cursor: Cursor? = resolver.query(uri, null, null, null, null)
+
+            if (cursor == null) {
+                isContact = false
+            } else {
+                isContact = cursor.count > 0
+                cursor.close()
+            }
+        }
+
+        return isContact
     }
 }

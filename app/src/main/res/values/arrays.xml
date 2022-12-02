@@ -3,12 +3,14 @@
     <string-array name="mode_entries">
         <item>Allow all</item>
         <item>Block unknown only</item>
+        <item>Allow contact only</item>
         <item>Block all</item>
     </string-array>
 
     <string-array name="mode_values">
         <item>allow_all</item>
         <item>block_unknown</item>
+        <item>allow_contact</item>
         <item>block_all</item>
     </string-array>
 </resources>
