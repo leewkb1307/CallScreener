@@ -27,14 +27,14 @@ class SettingsActivity : AppCompatActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPref.registerOnSharedPreferenceChangeListener(onModeChange)
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPref.unregisterOnSharedPreferenceChangeListener(onModeChange)
     }
 
@@ -57,7 +57,7 @@ class SettingsActivity : AppCompatActivity() {
             resetPrefMode()
             finish()
         } else {
-            val sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
             val modeVal = sharedPref.getString("prefMode", null)
             if (modeVal == "allow_contact") {
                 requestReadContacts()
@@ -79,11 +79,11 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun requestReadContacts() {
-        when {
+        when (PackageManager.PERMISSION_GRANTED) {
             ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.READ_CONTACTS
-            ) == PackageManager.PERMISSION_GRANTED -> {
+            ) -> {
             }
             else -> {
                 requestPermissionLauncher.launch(
