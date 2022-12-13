@@ -27,6 +27,8 @@ class SettingsActivity : AppCompatActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
+        verifyScreenerRole()
+
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPref.registerOnSharedPreferenceChangeListener(onModeChange)
     }
@@ -41,6 +43,14 @@ class SettingsActivity : AppCompatActivity() {
     class SettingsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
+        }
+    }
+
+    private fun verifyScreenerRole() {
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        val modeVal = sharedPref.getString("prefMode", null)
+        if (modeVal != "allow_all") {
+            requestScreenerRole()
         }
     }
 
@@ -67,10 +77,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private val onModeChange = SharedPreferences.OnSharedPreferenceChangeListener { sharedPref, key ->
         if (key == "prefMode") {
-            val modeVal = sharedPref.getString(key, "allow_all")
-            if (modeVal != "allow_all") {
-                requestScreenerRole()
-            }
+            verifyScreenerRole()
         }
     }
 
