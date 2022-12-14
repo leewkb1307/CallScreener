@@ -30,15 +30,14 @@ class CallScreenerService : CallScreeningService() {
                 Log.d(mLogTAG, "Incoming number --> $incomingNumber")
             }
 
-            val isUnknownCall = incomingNumber == null || incomingNumber.isEmpty()
+            val isUnknownCall = incomingNumber?.isEmpty() ?: true
 
-            val isEndCall: Boolean
             val context: Context = applicationContext
             val sharedPref: SharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context)
             val prefMode = sharedPref.getString("prefMode", "allow_all")
 
-            isEndCall = when (prefMode) {
+            val isEndCall = when (prefMode) {
                 "block_all" -> {
                     true
                 }
@@ -46,7 +45,7 @@ class CallScreenerService : CallScreeningService() {
                     isUnknownCall
                 }
                 "allow_contact" -> {
-                    isUnknownCall || !isInContact(context, incomingNumber)
+                    !isInContact(context, incomingNumber)
                 }
                 else -> {
                     false
@@ -81,12 +80,8 @@ class CallScreenerService : CallScreeningService() {
             )
             val cursor: Cursor? = resolver.query(uri, null, null, null, null)
 
-            if (cursor == null) {
-                isContact = false
-            } else {
-                isContact = cursor.count > 0
-                cursor.close()
-            }
+            isContact = (cursor?.count ?: 0) > 0
+            cursor?.close()
         }
 
         return isContact
