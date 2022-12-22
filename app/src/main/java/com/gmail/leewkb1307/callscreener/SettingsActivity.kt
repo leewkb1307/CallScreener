@@ -20,10 +20,7 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_activity)
         if (savedInstanceState == null) {
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.settings, SettingsFragment())
-                .commit()
+            loadScreen()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
@@ -65,7 +62,7 @@ class SettingsActivity : AppCompatActivity() {
         if (result.resultCode != Activity.RESULT_OK) {
             Toast.makeText(this,"Call screener setup not good!", Toast.LENGTH_SHORT).show()
             resetPrefMode()
-            finish()
+            loadScreen()
         } else {
             val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
             val modeVal = sharedPref.getString("prefMode", null)
@@ -83,6 +80,13 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun resetPrefMode() {
         PreferenceManager.getDefaultSharedPreferences(this).edit()?.putString("prefMode", "allow_all")?.apply()
+    }
+
+    private fun loadScreen() {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.settings, SettingsFragment())
+            .commit()
     }
 
     private fun requestReadContacts() {
@@ -106,7 +110,7 @@ class SettingsActivity : AppCompatActivity() {
             if (!isGranted) {
                 Toast.makeText(this,"Unable to read contacts!", Toast.LENGTH_SHORT).show()
                 resetPrefMode()
-                finish()
+                loadScreen()
             }
         }
 }
