@@ -45,7 +45,7 @@ class CallScreenerService : CallScreeningService() {
                     isUnknownCall
                 }
                 "allow_contact" -> {
-                    !isInContact(context, incomingNumber)
+                    (incomingNumber == null) || !isInContact(context, incomingNumber)
                 }
                 else -> {
                     false
@@ -66,23 +66,19 @@ class CallScreenerService : CallScreeningService() {
         }
     }
 
-    private fun isInContact(context: Context, phoneNumber: String?): Boolean {
+    private fun isInContact(context: Context, phoneNumber: String): Boolean {
         val isContact: Boolean
 
-        if (phoneNumber == null) {
-            isContact = false
-        } else {
-            val resolver: ContentResolver = context.contentResolver
-            val uri = Uri.withAppendedPath(
-                ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(
-                    phoneNumber
-                )
+        val resolver: ContentResolver = context.contentResolver
+        val uri = Uri.withAppendedPath(
+            ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(
+                phoneNumber
             )
-            val cursor: Cursor? = resolver.query(uri, null, null, null, null)
+        )
+        val cursor: Cursor? = resolver.query(uri, null, null, null, null)
 
-            isContact = (cursor?.count ?: 0) > 0
-            cursor?.close()
-        }
+        isContact = (cursor?.count ?: 0) > 0
+        cursor?.close()
 
         return isContact
     }
