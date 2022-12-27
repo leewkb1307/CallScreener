@@ -66,7 +66,7 @@ class SettingsActivity : AppCompatActivity() {
         } else {
             val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
             val modeVal = sharedPref.getString(PREF_KEY, null)
-            if (modeVal == MODE_ALLOW_CONTACT) {
+            if (modeVal == MODE_ALLOW_CONTACT || modeVal == MODE_BLOCK_ALL) {
                 requestReadContacts()
             }
         }
