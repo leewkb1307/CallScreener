@@ -35,16 +35,16 @@ class CallScreenerService : CallScreeningService() {
             val context: Context = applicationContext
             val sharedPref: SharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context)
-            val prefMode = sharedPref.getString("prefMode", "allow_all")
+            val prefMode = sharedPref.getString(PREF_KEY, MODE_ALLOW_ALL)
 
             val isEndCall = when (prefMode) {
-                "block_all" -> {
+                MODE_BLOCK_ALL -> {
                     true
                 }
-                "block_unknown" -> {
+                MODE_BLOCK_UNKNOWN -> {
                     isUnknownCall
                 }
-                "allow_contact" -> {
+                MODE_ALLOW_CONTACT -> {
                     (incomingNumber == null) || !isInContact(context, incomingNumber)
                 }
                 else -> {
