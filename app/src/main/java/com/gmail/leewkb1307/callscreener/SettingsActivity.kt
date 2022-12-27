@@ -72,7 +72,7 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    private val onModeChange = SharedPreferences.OnSharedPreferenceChangeListener { sharedPref, key ->
+    private val onModeChange = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         if (key == PREF_KEY) {
             verifyScreenerRole()
         }
