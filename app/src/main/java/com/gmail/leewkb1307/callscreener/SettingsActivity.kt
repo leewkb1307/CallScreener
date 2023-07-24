@@ -24,7 +24,7 @@ class SettingsActivity : AppCompatActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
-        verifyScreenerRole()
+        verifyReadContacts()
 
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPref.registerOnSharedPreferenceChangeListener(onModeChange)
@@ -63,18 +63,12 @@ class SettingsActivity : AppCompatActivity() {
             Toast.makeText(this,"Call screener setup not good!", Toast.LENGTH_SHORT).show()
             resetPrefMode()
             loadScreen()
-        } else {
-            val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-            val modeVal = sharedPref.getString(PREF_KEY, null)
-            if (modeVal == MODE_ALLOW_CONTACT || modeVal == MODE_BLOCK_ALL) {
-                requestReadContacts()
-            }
         }
     }
 
     private val onModeChange = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         if (key == PREF_KEY) {
-            verifyScreenerRole()
+            verifyReadContacts()
         }
     }
 
@@ -89,12 +83,23 @@ class SettingsActivity : AppCompatActivity() {
             .commit()
     }
 
+    private fun verifyReadContacts() {
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        val modeVal = sharedPref.getString(PREF_KEY, null)
+        if (modeVal == MODE_ALLOW_CONTACT || modeVal == MODE_BLOCK_ALL) {
+            requestReadContacts()
+        } else {
+            verifyScreenerRole()
+        }
+    }
+
     private fun requestReadContacts() {
         when (PackageManager.PERMISSION_GRANTED) {
             ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.READ_CONTACTS
             ) -> {
+                verifyScreenerRole()
             }
             else -> {
                 requestPermissionLauncher.launch(
@@ -111,6 +116,9 @@ class SettingsActivity : AppCompatActivity() {
                 Toast.makeText(this,"Unable to read contacts!", Toast.LENGTH_SHORT).show()
                 resetPrefMode()
                 loadScreen()
+            }
+            else {
+                verifyScreenerRole()
             }
         }
 }
