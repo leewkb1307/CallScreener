@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.gmail.leewkb1307.callscreener"
         minSdk 29
-        targetSdk 33
+        targetSdk 34
         versionCode 1002000
         versionName '1.2.0'
 
