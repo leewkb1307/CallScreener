@@ -35,14 +35,14 @@ class SettingsActivity : AppCompatActivity() {
 
         verifyReadContacts()
 
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        val sharedPref = getSharedPref()
         sharedPref.registerOnSharedPreferenceChangeListener(onModeChange)
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        val sharedPref = getSharedPref()
         sharedPref.unregisterOnSharedPreferenceChangeListener(onModeChange)
     }
 
@@ -53,8 +53,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun verifyScreenerRole() {
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        val modeVal = sharedPref.getString(PREF_KEY, null)
+        val modeVal = getPrefModeVal()
         if (modeVal != MODE_ALLOW_ALL) {
             requestScreenerRole()
         }
@@ -81,8 +80,17 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    private fun getSharedPref(): SharedPreferences {
+        return PreferenceManager.getDefaultSharedPreferences(this)
+    }
+
+    private fun getPrefModeVal(): String {
+        val sharedPref = getSharedPref()
+        return sharedPref.getString(PREF_KEY, null) ?: MODE_ALLOW_ALL
+    }
+
     private fun resetPrefMode() {
-        PreferenceManager.getDefaultSharedPreferences(this).edit()?.putString(PREF_KEY, MODE_ALLOW_ALL)?.apply()
+        getSharedPref().edit()?.putString(PREF_KEY, MODE_ALLOW_ALL)?.apply()
     }
 
     private fun loadScreen() {
@@ -93,8 +101,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun verifyReadContacts() {
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        val modeVal = sharedPref.getString(PREF_KEY, null)
+        val modeVal = getPrefModeVal()
         if (modeVal == MODE_ALLOW_CONTACT || modeVal == MODE_BLOCK_ALL) {
             requestReadContacts()
         } else {
